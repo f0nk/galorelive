@@ -1,5 +1,5 @@
 class CreateImages < ActiveRecord::Migration
-  def change
+  def up
     create_table :images do |t|
 	t.string :image_type
 	t.string :amazon_image_url
@@ -15,4 +15,9 @@ class CreateImages < ActiveRecord::Migration
     t.timestamps
     end
   end
+
+  def down 
+  	drop_table :images
+  end
+
 end

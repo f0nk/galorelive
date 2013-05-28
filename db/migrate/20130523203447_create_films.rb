@@ -1,5 +1,5 @@
 class CreateFilms < ActiveRecord::Migration
-  def change
+  def up
     create_table :films do |t|
     
 	t.integer :freebase_id
@@ -32,4 +32,10 @@ class CreateFilms < ActiveRecord::Migration
 
     end
   end
+
+  def down
+    drop_table :films
+  end
+
 end
+

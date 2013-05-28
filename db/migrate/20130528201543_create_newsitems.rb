@@ -1,5 +1,5 @@
 class CreateNewsitems < ActiveRecord::Migration
-  def change
+  def up
     create_table :newsitems do |t|
 
     t.string :news_source
@@ -11,5 +11,9 @@ class CreateNewsitems < ActiveRecord::Migration
 
     t.timestamps
     end
+  end
+
+  def down
+  	drop_table :newsitems
   end
 end
