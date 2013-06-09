@@ -1,7 +1,7 @@
 class CreateNewsitems < ActiveRecord::Migration
   def up
     create_table :newsitems do |t|
-
+    t.integer :film_id
     t.string :news_source
     t.string :news_type
     t.string :url

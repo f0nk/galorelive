@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
   end
 
   create_table "images", :force => true do |t|
+    t.integer  "newsitem_id"
     t.string   "image_type"
     t.string   "amazon_image_url"
     t.string   "large_size"
@@ -59,6 +60,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
   end
 
   create_table "newsitems", :force => true do |t|
+    t.integer  "film_id"
     t.string   "news_source"
     t.string   "news_type"
     t.string   "url"
@@ -70,10 +72,11 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
   end
 
   create_table "videos", :force => true do |t|
+    t.integer  "newsitem_id"
     t.string   "video_link"
     t.string   "video_type"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
 end
