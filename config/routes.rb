@@ -1,4 +1,8 @@
 Galorelive::Application.routes.draw do
+  get "welcome/index"
+  get "welcome/scraping_ref"
+  get "welcome/scrape"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
