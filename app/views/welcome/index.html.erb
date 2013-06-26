@@ -1,4 +1,23 @@
 <h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
 
-<%= @var %>
+
+<% @images.each do |item| %>
+<br>
+<%= item.image_source %>
+
+<% end %>
+
+
+
+
+<%- films = Film.all %>
+<%- @images = Array.new %>
+
+<%- films.each do |film| %>
+<%- newsitems = film.newsitems %>
+<%-  newsitems.each do |item| %>
+<h1> <%= item.news_title %> </h1>
+<%-   @images += item.images %>
+
+<%  end %>
+<% end %>

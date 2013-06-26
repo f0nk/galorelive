@@ -2,6 +2,7 @@ class CreateImages < ActiveRecord::Migration
   def up
     create_table :images do |t|
     t.integer :newsitem_id
+    t.string :image_title
 	t.string :image_type
 	t.string :amazon_image_url
 	t.string :large_size

@@ -1,0 +1,6 @@
+<%= @itemcount %>
+<br>
+<%= @newsitemscount %>
+<br>
+<%= @imgscount %>
+<br>
