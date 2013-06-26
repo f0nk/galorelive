@@ -11,6 +11,7 @@ class CreateFilms < ActiveRecord::Migration
 	t.string :metacritic_score
 	t.string :youtube_trailer_links
 	t.string :youtube_clip_links
+	t.string :film_title
 	t.string :weekend_BO
 	t.string :overall_BO
 	t.string :genre

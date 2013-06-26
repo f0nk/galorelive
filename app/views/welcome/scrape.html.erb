@@ -1,4 +1,18 @@
-<h1>Welcome#scrape</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+ 
+<%= @items[0] %>
+<br>
+<br>
 
-<%= @items %>
+
+<div class = 'page'>
+<%- @items.each do |item| %>
+  <%- item.images.each do |image| %>
+    <div class = 'item'>
+          <%= link_to image_tag(image.image_source.to_s, :title => item.created_at.to_s+ ' ' + item.news_title.strip + '..."'), image.image_source %>
+          <div class ='title'>
+           <!-- <div class = 'article_url'> <%=  link_to 'via', item.article_url %>  </div> -->
+          </div>
+  </div>
+  <% end %>
+<% end %>
+</div>

@@ -6,7 +6,16 @@ class WelcomeController < ApplicationController
  
     #@tmp = Item.order("created_at DESC")
     #@tmp2 = Picture.all
-    @var= "hey"
+    films = Film.all
+    @images = Array.new
+    
+    films.each do |film|
+      newsitems = film.newsitems
+      newsitems.each do |item|
+        @images += item.images 
+      end
+    end
+
   end
 
   def scrape
@@ -41,10 +50,14 @@ class WelcomeController < ApplicationController
    #scraping(@funsites, "Fun")
    #scraping(@buzzsites, "Buzz")
 
-  scraping_ref(@site5, "Random")
+  scraping(@site5, "Random")
 
   end
-def scraping_ref(sitecollection, categ)
+def scraping(sitecollection, categ)
+    @itemcount = 0
+    @newsitemscount = 0
+    @imgscount = 0
+
     sitecollection.each do |site|
       xml_doc  = Nokogiri::XML(open(site))
     
@@ -55,11 +68,55 @@ def scraping_ref(sitecollection, categ)
       else
         @source = xml_doc.xpath("//title").first.inner_text.to_s
       end
-    end	
+    end
+
+    @items.each do |item|
+     # img_link =  item.to_html.scan(/http[^"]*jpg/).reject{|s|s.match(/http:\/\/media.movieweb.com\/i\/img\/feed\/fb.jpg/)}.reject{|t|t.include?('-70x53')}.reject{|k|k.include?('-550x')}.reject{|s|s.include?('--003')}.reject{|j|j.include?('-005')}.reject{|j|j.include?('tops')}.reject{|j|j.include?('-003.')}.reject{|j|j.include?('b.jpg')}.reject{|j|j.include?('h.jpg')}.reject{|j|j.include?('-007.jpg')}.reject{|j|j.include?('470-75.jpg')}.uniq
+      img_link = item.to_html.scan(/http[^"]*jpg/)
+
+      title = item.xpath("title").inner_text.to_s.strip
+     # film_title =
+
+      break if Film.where(:film_title => title).exists? == true
+
+      f = Film.new
+      
+      f.film_title = title
+      f.freebase_id = 'freebase id goes here'
+      f.imdb_id = 'imdb id goes here'
+      f.imdb_link = 'imdb link goes here'
+
+     # @itemcount += 1
+
+      #break if Picture.where(:url => img_link).exists? == true || Item.where(:title => title).exists? == true
+
+        ni = Newsitem.new
+        ni.news_source = @source.strip
+        ni.news_type = categ
+        ni.url = item.xpath("link").inner_text.to_s.strip
+        ni.description = ''
+        ni.news_title = title
+        ni.keywords = ''
+        ni.type = ''
+      #  @newsitemscount += 1
+
+          img_link.each do |p|
+            pic = Image.new
+            pic.image_source = p
+            ni.images << pic
+          #  @imgscount += 1
+          end
+
+      f.newsitems << ni
+
+      f.save
+
+    end  
+
 end
 
 
-  def scraping(sitecollection, categ)
+  def scraping_ref(sitecollection, categ)
 
     sitecollection.each do |site|
       xml_doc  = Nokogiri::XML(open(site))

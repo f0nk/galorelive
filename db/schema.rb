@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
     t.string   "metacritic_score"
     t.string   "youtube_trailer_links"
     t.string   "youtube_clip_links"
+    t.string   "film_title"
     t.string   "weekend_BO"
     t.string   "overall_BO"
     t.string   "genre"
@@ -45,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
 
   create_table "images", :force => true do |t|
     t.integer  "newsitem_id"
+    t.string   "image_title"
     t.string   "image_type"
     t.string   "amazon_image_url"
     t.string   "large_size"
@@ -61,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
 
   create_table "newsitems", :force => true do |t|
     t.integer  "film_id"
+    t.string   "news_title"
     t.string   "news_source"
     t.string   "news_type"
     t.string   "url"
@@ -73,6 +76,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
 
   create_table "videos", :force => true do |t|
     t.integer  "newsitem_id"
+    t.string   "video_title"
     t.string   "video_link"
     t.string   "video_type"
     t.datetime "created_at",  :null => false
