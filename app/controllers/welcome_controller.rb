@@ -1,3 +1,4 @@
+#encoding: utf-8
 class WelcomeController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
@@ -49,14 +50,14 @@ class WelcomeController < ApplicationController
    #scraping(@geeksites, "Geek")
    #scraping(@funsites, "Fun")
    #scraping(@buzzsites, "Buzz")
+ 
+  #Newsitem.destroy_all
+  #Film.destroy_all
 
-  scraping(@site5, "Random")
+  scraping(@random, "Random")
 
   end
 def scraping(sitecollection, categ)
-    @itemcount = 0
-    @newsitemscount = 0
-    @imgscount = 0
 
     sitecollection.each do |site|
       xml_doc  = Nokogiri::XML(open(site))
@@ -68,58 +69,68 @@ def scraping(sitecollection, categ)
       else
         @source = xml_doc.xpath("//title").first.inner_text.to_s
       end
+    
+
+      @items.each do |item|
+       # img_link =  item.to_html.scan(/http[^"]*jpg/).reject{|s|s.match(/http:\/\/media.movieweb.com\/i\/img\/feed\/fb.jpg/)}.reject{|t|t.include?('-70x53')}.reject{|k|k.include?('-550x')}.reject{|s|s.include?('--003')}.reject{|j|j.include?('-005')}.reject{|j|j.include?('tops')}.reject{|j|j.include?('-003.')}.reject{|j|j.include?('b.jpg')}.reject{|j|j.include?('h.jpg')}.reject{|j|j.include?('-007.jpg')}.reject{|j|j.include?('470-75.jpg')}.uniq
+
+        title = item.xpath("title").inner_text.to_s.strip
+        img_link = item.to_html.scan(/http[^"]*jpg/)
+        description = item.xpath("description").inner_text.to_s.strip
+        
+        break if Newsitem.where(:news_title => title).exists? == true || Image.where(:image_source => img_link).exists? == true
+
+
+        f = Film.new
+        
+        var = film_identifier(title, @source)
+
+
+       # if Film.where(:film_title => var).exists? == true 
+
+        f.film_title = var
+        #f.film_title = title.match(/‘(.*?)’/).to_s.strip
+        f.freebase_id = 'freebase id goes here'
+        f.imdb_id = 'imdb id goes here'
+        f.imdb_link = 'imdb link goes here'
+
+          ni = Newsitem.new
+          ni.news_source = @source.strip
+          ni.news_type = categ
+          ni.url = item.xpath("link").inner_text.to_s.strip
+          ni.description = ''
+          ni.news_title = title
+          ni.keywords = ''
+          ni.type = ''
+
+            img_link.each do |p|
+              pic = Image.new
+              pic.image_source = p
+              ni.images << pic
+            end
+
+        f.newsitems << ni
+
+        f.save
+
+      end  
     end
-
-    @items.each do |item|
-     # img_link =  item.to_html.scan(/http[^"]*jpg/).reject{|s|s.match(/http:\/\/media.movieweb.com\/i\/img\/feed\/fb.jpg/)}.reject{|t|t.include?('-70x53')}.reject{|k|k.include?('-550x')}.reject{|s|s.include?('--003')}.reject{|j|j.include?('-005')}.reject{|j|j.include?('tops')}.reject{|j|j.include?('-003.')}.reject{|j|j.include?('b.jpg')}.reject{|j|j.include?('h.jpg')}.reject{|j|j.include?('-007.jpg')}.reject{|j|j.include?('470-75.jpg')}.uniq
-      img_link = item.to_html.scan(/http[^"]*jpg/)
-
-      title = item.xpath("title").inner_text.to_s.strip
-     # film_title =
-
-     break if Film.where(:film_title => title).exists? == true
-
-      f = Film.new
-      
-      f.film_title = film_identifier (title, @source)
-      f.freebase_id = 'freebase id goes here'
-      f.imdb_id = 'imdb id goes here'
-      f.imdb_link = 'imdb link goes here'
-
-     # @itemcount += 1
-
-      #break if Picture.where(:url => img_link).exists? == true || Item.where(:title => title).exists? == true
-
-        ni = Newsitem.new
-        ni.news_source = @source.strip
-        ni.news_type = categ
-        ni.url = item.xpath("link").inner_text.to_s.strip
-        ni.description = ''
-        ni.news_title = title
-        ni.keywords = ''
-        ni.type = ''
-      #  @newsitemscount += 1
-
-          img_link.each do |p|
-            pic = Image.new
-            pic.image_source = p
-            ni.images << pic
-          #  @imgscount += 1
-          end
-
-      f.newsitems << ni
-
-      f.save
-
-    end  
-
 end
 
 
 def film_identifier(title_string, source)
-  if source == '/Film' 
-    return title_string.to_html.scan(/‘(.*?)’/)
-  else  return title_string
+ # if source == '/Film' 
+    var = title_string.scan(/‘(.*?)’/).to_s.strip
+
+    if var.empty? == false 
+      var[0] = ''
+      var.chop!
+      return var
+    
+    else
+
+      return title_string
+
   end  
    
 end

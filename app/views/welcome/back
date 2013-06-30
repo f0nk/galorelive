@@ -1,9 +1,35 @@
+<% @images.each do |item| %>
+<br>
+<%= item.image_source %>
+
+<% end %>
+
+
+
+
+<%- films = Film.all %>
+<%- @images = Array.new %>
+
+<%- films.each do |film| %>
+<%- newsitems = film.newsitems %>
+<%-  newsitems.each do |item| %>
+<h1> <%= item.news_title %> </h1>
+<%-   @images += item.images %>
+
+<%  end %>
+<% end %>
+
+
 <%= @itemcount %>
 <br>
 <%= @newsitemscount %>
 <br>
 <%= @imgscount %>
 <br>
+
+
+
+
 
 
 
@@ -19,3 +45,16 @@
   <% end %>
 <% end %>
 </div>
+
+
+
+
+
+
+
+
+<% @images.each do |item| %>
+<br>
+<%= item.image_source %>
+
+<% end %>
