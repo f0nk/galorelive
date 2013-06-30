@@ -77,11 +77,11 @@ def scraping(sitecollection, categ)
       title = item.xpath("title").inner_text.to_s.strip
      # film_title =
 
-      break if Film.where(:film_title => title).exists? == true
+     break if Film.where(:film_title => title).exists? == true
 
       f = Film.new
       
-      f.film_title = title
+      f.film_title = film_identifier (title, @source)
       f.freebase_id = 'freebase id goes here'
       f.imdb_id = 'imdb id goes here'
       f.imdb_link = 'imdb link goes here'
@@ -115,6 +115,14 @@ def scraping(sitecollection, categ)
 
 end
 
+
+def film_identifier(title_string, source)
+  if source == '/Film' 
+    return title_string.to_html.scan(/‘(.*?)’/)
+  else  return title_string
+  end  
+   
+end
 
   def scraping_ref(sitecollection, categ)
 
