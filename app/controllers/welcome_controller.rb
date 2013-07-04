@@ -2,6 +2,7 @@
 class WelcomeController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
+  require 'csv'
 
   def index
  
@@ -57,6 +58,62 @@ class WelcomeController < ApplicationController
   scraping(@random, "Random")
 
   end
+
+def thenumbers
+  sdsitecollection = ["http://www.the-numbers.com/movies/letter/3", "http://www.the-numbers.com/movies/letter/(","http://www.the-numbers.com/movies/letter/1","http://www.the-numbers.com/movies/letter/2", "http://www.the-numbers.com/movies/letter/4", "http://www.the-numbers.com/movies/letter/5" , "http://www.the-numbers.com/movies/letter/6", "http://www.the-numbers.com/movies/letter/7", "http://www.the-numbers.com/movies/letter/8", "http://www.the-numbers.com/movies/letter/9", "http://www.the-numbers.com/movies/letter/A", "http://www.the-numbers.com/movies/letter/B", "http://www.the-numbers.com/movies/letter/C", "http://www.the-numbers.com/movies/letter/D", "http://www.the-numbers.com/movies/letter/E", "http://www.the-numbers.com/movies/letter/F", "http://www.the-numbers.com/movies/letter/G", "http://www.the-numbers.com/movies/letter/H", "http://www.the-numbers.com/movies/letter/I", "http://www.the-numbers.com/movies/letter/J", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/L", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/M", "http://www.the-numbers.com/movies/letter/N", "http://www.the-numbers.com/movies/letter/O", "http://www.the-numbers.com/movies/letter/P", "http://www.the-numbers.com/movies/letter/Q", "http://www.the-numbers.com/movies/letter/R", "http://www.the-numbers.com/movies/letter/S", "http://www.the-numbers.com/movies/letter/T)","http://www.the-numbers.com/movies/letter/U", "http://www.the-numbers.com/movies/letter/V", "http://www.the-numbers.com/movies/letter/W", "http://www.the-numbers.com/movies/letter/X", "http://www.the-numbers.com/movies/letter/Y", "http://www.the-numbers.com/movies/letter/Z"]  
+
+  @sitecollection = ["http://www.the-numbers.com/movies/letter/3"]
+
+  @items = Array.new
+  @var = Array.new
+  @var2 = Array.new
+  k = Array.new
+ # @sitecollection.each do |site|
+
+    xml_doc  = Nokogiri::HTML(open("http://www.the-numbers.com/movies/letter/A"))
+
+  #   @items = xml_doc.css('div#page_filling_chart table tr')[10].text
+
+     @var = xml_doc.css('div#page_filling_chart tr')
+      #@var2 =xml_doc.css('div#page_filling_chart tr')[10].css('td')[1].text
+
+#=begin
+                CSV.open("test.csv", "w") do |csv|
+                    @var.each do |item|
+                      t = item.css('td')
+
+                      if t[0].blank? == true
+                        k[0] = "NIL"
+                      else
+                        k[0] = t[0].text
+                      end                      
+                      if t[1].blank? == true
+                        k[1] = "NIL"
+                      else
+                        k[1] = t[1].text
+                      end                      
+                      if t[2].blank? == true
+                        k[2] = "NIL"
+                      else
+                        k[2] = t[2].text
+                      end                      
+                      if t[3].blank? == true
+                        k[3] = "NIL"
+                      else
+                        k[3] = t[3].text
+                      end
+                      if t[4].blank? == true
+                        k[4] = "NIL"
+                      else
+                        k[4] = t[4].text
+                      end
+                      csv << [k[0],k[1],k[2],k[3],k[4]]
+                    end           
+                 end
+# # end
+end 
+
+
 def scraping(sitecollection, categ)
 
     sitecollection.each do |site|
