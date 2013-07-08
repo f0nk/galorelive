@@ -115,6 +115,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   httpclient
   jquery-rails
+  json
   nokogiri
   pg
   rails (= 3.2.5)

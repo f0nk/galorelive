@@ -8,6 +8,7 @@ gem 'rails', '3.2.5'
 # gem 'sqlite3'
 gem 'httpclient'
 gem 'nokogiri'
+gem 'json'
 
 gem 'ruby-tmdb3'
 
