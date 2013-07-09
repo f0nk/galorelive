@@ -5,6 +5,8 @@ Galorelive::Application.routes.draw do
   get "welcome/scraping_ref"
   get "welcome/scrape"
   get "welcome/thenumbers"
+  get "welcome/omdbapi"
+
   get "test/index"
 
   # The priority is based upon order of creation:

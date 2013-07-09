@@ -71,7 +71,7 @@ def thenumbers
   k = Array.new
 
 CSV.open("test.csv", "w") do |csv|
-  @sitecollectionlarge.each do |site|
+  @sitecollection.each do |site|
 
    # xml_doc  = Nokogiri::HTML(open("http://www.the-numbers.com/movies/letter/A"))
     xml_doc  = Nokogiri::HTML(open(site))
@@ -110,15 +110,17 @@ CSV.open("test.csv", "w") do |csv|
                       else
                         k[4] = t[4].text
                       end
-                      csv << [k[0],k[1],k[2],k[3],k[4]]
+                      csv << [k[0],k[1],k[2],k[3],k[4],omdbapi(t[1].text)]
                     end           
                  end
    end
 end 
 
-def omdbapi(t, y)
-  url = ("")
-  result = JSON.parse(open("url_of_json_service").read)
+def omdbapi(t)
+  url = ("http://www.omdbapi.com/?t="+t)
+  @var = JSON.parse(open(url).read)
+  sleep (0.1)
+  return p @var ["imdbID"]
 
 end
 
