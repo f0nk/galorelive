@@ -63,12 +63,13 @@ class WelcomeController < ApplicationController
 def thenumbers
   @sitecollectionlarge = ["http://www.the-numbers.com/movies/letter/3", "http://www.the-numbers.com/movies/letter/(","http://www.the-numbers.com/movies/letter/1","http://www.the-numbers.com/movies/letter/2", "http://www.the-numbers.com/movies/letter/4", "http://www.the-numbers.com/movies/letter/5" , "http://www.the-numbers.com/movies/letter/6", "http://www.the-numbers.com/movies/letter/7", "http://www.the-numbers.com/movies/letter/8", "http://www.the-numbers.com/movies/letter/9", "http://www.the-numbers.com/movies/letter/A", "http://www.the-numbers.com/movies/letter/B", "http://www.the-numbers.com/movies/letter/C", "http://www.the-numbers.com/movies/letter/D", "http://www.the-numbers.com/movies/letter/E", "http://www.the-numbers.com/movies/letter/F", "http://www.the-numbers.com/movies/letter/G", "http://www.the-numbers.com/movies/letter/H", "http://www.the-numbers.com/movies/letter/I", "http://www.the-numbers.com/movies/letter/J", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/L", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/M", "http://www.the-numbers.com/movies/letter/N", "http://www.the-numbers.com/movies/letter/O", "http://www.the-numbers.com/movies/letter/P", "http://www.the-numbers.com/movies/letter/Q", "http://www.the-numbers.com/movies/letter/R", "http://www.the-numbers.com/movies/letter/S", "http://www.the-numbers.com/movies/letter/T)","http://www.the-numbers.com/movies/letter/U", "http://www.the-numbers.com/movies/letter/V", "http://www.the-numbers.com/movies/letter/W", "http://www.the-numbers.com/movies/letter/X", "http://www.the-numbers.com/movies/letter/Y", "http://www.the-numbers.com/movies/letter/Z"]  
 
-  @sitecollection = ["http://www.the-numbers.com/movies/letter/3", "http://www.the-numbers.com/movies/letter/("]
+  @sitecollection = ["http://www.the-numbers.com/movies/letter/3"]
 
   @items = Array.new
   @var = Array.new
   @var2 = Array.new
   k = Array.new
+  progressbar = ProgressBar.create
 
 CSV.open("test.csv", "w") do |csv|
   @sitecollection.each do |site|
@@ -85,45 +86,78 @@ CSV.open("test.csv", "w") do |csv|
                     @var.each do |item|
                       t = item.css('td')
 
-                      if t[0].blank? == true
+                      if t[0].blank? == true #year
                         k[0] = ""
                       else
                         k[0] = t[0].text
                       end                      
-                      if t[1].blank? == true
+                      if t[1].blank? == true #title
                         k[1] = ""
                       else
                         k[1] = t[1].text
                       end                      
-                      if t[2].blank? == true
+                      if t[2].blank? == true #genre
                         k[2] = ""
                       else
                         k[2] = t[2].text
                       end                      
-                      if t[3].blank? == true
+                      if t[3].blank? == true #production budget
                         k[3] = ""
                       else
                         k[3] = t[3].text
                       end
-                      if t[4].blank? == true
+                      if t[4].blank? == true #domestic box office
                         k[4] = ""
                       else
                         k[4] = t[4].text
-                      end
-                      csv << [k[0],k[1],k[2],k[3],k[4],omdbapi(t[1].text)]
+                      end                   
+
+                      @temp2 = "k = "+ k[2]
+                      if t[1].blank? == false
+                      #csv << [k[0],k[1],k[2],k[3],k[4],omdbapi(t[1].text)]
+                       # csv << [k[0],k[1],k[2],k[3],k[4],omdbapi]
+                        f = Film.new
+                       # f.production_year = k[0][-4,4]
+                        f.imdb_id = omdbapi(t[1].text, "imdbID")
+                        if f.imdb_id.blank? == false 
+                          f.genre = omdbapiIMDB(f.imdb_id, "Genre")
+                          f.production_year = omdbapiIMDB(f.imdb_id, "Year")
+                          f.rating = omdbapiIMDB(f.imdb_id, "Rated")
+                          f.running_time = omdbapiIMDB(f.imdb_id, "Runtime")
+                          f.plot = omdbapiIMDB(f.imdb_id, "Plot")
+                          f. poster = omdbapiIMDB(f.imdb_id, "Poster")
+                        end
+                        f.film_title = k[1]
+                        f.budget = k[3]
+                        f.overall_BO = k[4]
+                       
+                        f.save
+
+                       progressbar.increment
+                      
+                      end      
                     end           
                  end
    end
 end 
 
-def omdbapi(t)
-  url = ("http://www.omdbapi.com/?t="+t)
+def omdbapi(t, p)
+  #url = String.new
+  url = "http://www.omdbapi.com/?t="+CGI::escape(t)
   @var = JSON.parse(open(url).read)
   sleep (0.1)
-  return p @var ["imdbID"]
+  return p @var [p]
 
 end
 
+def omdbapiIMDB(i, p)
+  #url = String.new
+  url = "http://www.omdbapi.com/?i="+i
+  parsed = JSON.parse(open(url).read)
+ # sleep (0.2)
+  return p parsed [p]
+
+end
 
 def scraping(sitecollection, categ)
 

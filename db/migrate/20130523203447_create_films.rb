@@ -25,6 +25,7 @@ class CreateFilms < ActiveRecord::Migration
 	t.string :language
 	t.string :vfx
 	t.string :production_year
+	t.string :poster
 	t.string :plot
 	t.string :summary
 	t.string :keywords	

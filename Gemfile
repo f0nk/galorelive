@@ -9,6 +9,8 @@ gem 'rails', '3.2.5'
 gem 'httpclient'
 gem 'nokogiri'
 gem 'json'
+#gem 'debugger'
+gem 'ruby-progressbar'
 
 gem 'ruby-tmdb3'
 

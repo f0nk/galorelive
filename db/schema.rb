@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20130528201558) do
     t.string   "language"
     t.string   "vfx"
     t.string   "production_year"
+    t.string   "poster"
     t.string   "plot"
     t.string   "summary"
     t.string   "keywords"
