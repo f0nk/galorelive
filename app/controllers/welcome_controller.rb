@@ -61,8 +61,8 @@ class WelcomeController < ApplicationController
   end
 
 def thenumbers
-  @sitecollectionlarge = ["http://www.the-numbers.com/movies/letter/3", "http://www.the-numbers.com/movies/letter/(","http://www.the-numbers.com/movies/letter/1","http://www.the-numbers.com/movies/letter/2", "http://www.the-numbers.com/movies/letter/4", "http://www.the-numbers.com/movies/letter/5" , "http://www.the-numbers.com/movies/letter/6", "http://www.the-numbers.com/movies/letter/7", "http://www.the-numbers.com/movies/letter/8", "http://www.the-numbers.com/movies/letter/9", "http://www.the-numbers.com/movies/letter/A", "http://www.the-numbers.com/movies/letter/B", "http://www.the-numbers.com/movies/letter/C", "http://www.the-numbers.com/movies/letter/D", "http://www.the-numbers.com/movies/letter/E", "http://www.the-numbers.com/movies/letter/F", "http://www.the-numbers.com/movies/letter/G", "http://www.the-numbers.com/movies/letter/H", "http://www.the-numbers.com/movies/letter/I", "http://www.the-numbers.com/movies/letter/J", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/L", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/M", "http://www.the-numbers.com/movies/letter/N", "http://www.the-numbers.com/movies/letter/O", "http://www.the-numbers.com/movies/letter/P", "http://www.the-numbers.com/movies/letter/Q", "http://www.the-numbers.com/movies/letter/R", "http://www.the-numbers.com/movies/letter/S", "http://www.the-numbers.com/movies/letter/T)","http://www.the-numbers.com/movies/letter/U", "http://www.the-numbers.com/movies/letter/V", "http://www.the-numbers.com/movies/letter/W", "http://www.the-numbers.com/movies/letter/X", "http://www.the-numbers.com/movies/letter/Y", "http://www.the-numbers.com/movies/letter/Z"]  
-
+  @sitecollectionlarge = ["http://www.the-numbers.com/movies/letter/3", "http://www.the-numbers.com/movies/letter/(","http://www.the-numbers.com/movies/letter/1","http://www.the-numbers.com/movies/letter/2", "http://www.the-numbers.com/movies/letter/4", "http://www.the-numbers.com/movies/letter/5" , "http://www.the-numbers.com/movies/letter/6", "http://www.the-numbers.com/movies/letter/7", "http://www.the-numbers.com/movies/letter/8", "http://www.the-numbers.com/movies/letter/9", "http://www.the-numbers.com/movies/letter/A", "http://www.the-numbers.com/movies/letter/B", "http://www.the-numbers.com/movies/letter/C", "http://www.the-numbers.com/movies/letter/D", "http://www.the-numbers.com/movies/letter/E", "http://www.the-numbers.com/movies/letter/F", "http://www.the-numbers.com/movies/letter/G", "http://www.the-numbers.com/movies/letter/H", "http://www.the-numbers.com/movies/letter/I", "http://www.the-numbers.com/movies/letter/J", "http://www.the-numbers.com/movies/letter/L", "http://www.the-numbers.com/movies/letter/K", "http://www.the-numbers.com/movies/letter/M", "http://www.the-numbers.com/movies/letter/N", "http://www.the-numbers.com/movies/letter/O", "http://www.the-numbers.com/movies/letter/P", "http://www.the-numbers.com/movies/letter/Q", "http://www.the-numbers.com/movies/letter/R", "http://www.the-numbers.com/movies/letter/S", "http://www.the-numbers.com/movies/letter/T)","http://www.the-numbers.com/movies/letter/U", "http://www.the-numbers.com/movies/letter/V", "http://www.the-numbers.com/movies/letter/W", "http://www.the-numbers.com/movies/letter/X", "http://www.the-numbers.com/movies/letter/Y", "http://www.the-numbers.com/movies/letter/Z"]  
+#, "http://www.the-numbers.com/movies/letter/K"
   @sitecollection = ["http://www.the-numbers.com/movies/letter/3"]
 
   @items = Array.new
@@ -72,7 +72,7 @@ def thenumbers
   progressbar = ProgressBar.create
 
 CSV.open("test.csv", "w") do |csv|
-  @sitecollection.each do |site|
+  @sitecollectionlarge.each do |site|
 
    # xml_doc  = Nokogiri::HTML(open("http://www.the-numbers.com/movies/letter/A"))
     xml_doc  = Nokogiri::HTML(open(site))
@@ -113,19 +113,23 @@ CSV.open("test.csv", "w") do |csv|
                       end                   
 
                       @temp2 = "k = "+ k[2]
-                      if t[1].blank? == false
+                      if t[1].blank? == false 
                       #csv << [k[0],k[1],k[2],k[3],k[4],omdbapi(t[1].text)]
                        # csv << [k[0],k[1],k[2],k[3],k[4],omdbapi]
                         f = Film.new
                        # f.production_year = k[0][-4,4]
                         f.imdb_id = omdbapi(t[1].text, "imdbID")
-                        if f.imdb_id.blank? == false 
-                          f.genre = omdbapiIMDB(f.imdb_id, "Genre")
-                          f.production_year = omdbapiIMDB(f.imdb_id, "Year")
-                          f.rating = omdbapiIMDB(f.imdb_id, "Rated")
-                          f.running_time = omdbapiIMDB(f.imdb_id, "Runtime")
-                          f.plot = omdbapiIMDB(f.imdb_id, "Plot")
-                          f. poster = omdbapiIMDB(f.imdb_id, "Poster")
+                        if f.imdb_id.blank? == false
+                        break if Film.where(:imdb_id => f.imdb_id).exists? == true 
+
+                          omdbapiReturn =  omdbapiIMDB(f.imdb_id)
+                          f.genre = omdbapiReturn ["Genre"]
+                          f.production_year = omdbapiReturn ["Year"]
+                          f.rating = omdbapiReturn ["Rated"]
+                          f.running_time = omdbapiReturn ["Runtime"]
+                          f.plot = omdbapiReturn ["Plot"]
+                          f.poster = omdbapiReturn ["Poster"]
+                          f.imdb_score = omdbapiReturn ["imdbRating"]
                         end
                         f.film_title = k[1]
                         f.budget = k[3]
@@ -150,12 +154,12 @@ def omdbapi(t, p)
 
 end
 
-def omdbapiIMDB(i, p)
+def omdbapiIMDB(i)
   #url = String.new
   url = "http://www.omdbapi.com/?i="+i
   parsed = JSON.parse(open(url).read)
- # sleep (0.2)
-  return p parsed [p]
+  sleep (0.2)
+  return p parsed
 
 end
 
